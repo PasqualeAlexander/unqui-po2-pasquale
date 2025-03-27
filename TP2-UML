@@ -146,3 +146,13 @@ ConceptoDeRecibo >> initializeCon: unaDescripcion monto: unMonto
 
 ConceptoDeRecibo >> imprimir
     Transcript show: descripcion; show: ': $'; show: monto printString; cr.
+
+"1)C) Dos scripts de codigo donde muestro primero el cálculo del total de sueldos neto y luego la liquidación de sueldo:
+
+"
+
+"2)C) Si, se mofifica ya que hay que agregar una clase nueva, la cual es subclase de Empleado, llamada "EmpleadoContratado"."
+
+"2)D) Scripts de codigo agregando a un EmpleadoContratado:
+
+"
