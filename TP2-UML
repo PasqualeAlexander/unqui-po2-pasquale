@@ -1,0 +1,148 @@
+Object subclass: #Empresa
+    instanceVariableNames: 'nombre cuit empleados recibosDeHaberes'
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa'.
+
+Empresa >> initializeCon: unNombre cuit: unCuit
+    nombre := unNombre.
+    cuit := unCuit.
+    empleados := OrderedCollection new.
+    recibosDeHaberes := OrderedCollection new.
+
+Empresa >> agregarEmpleado: unEmpleado
+    empleados add: unEmpleado.
+
+Empresa >> totalSueldosNetos
+    ^ empleados sum: [:empleado | empleado sueldoNeto].
+
+Empresa >> totalSueldosBrutos
+    ^ empleados sum: [:empleado | empleado sueldoBruto].
+
+Empresa >> totalRetenciones
+    ^ empleados sum: [:empleado | empleado retenciones].
+
+Empresa >> liquidarSueldos
+    empleados do: [:empleado |
+        | recibo |
+        recibo := ReciboDeHaberes new initializeCon: empleado.
+        recibosDeHaberes add: recibo.
+        recibo imprimir].
+
+Object subclass: #Empleado
+    instanceVariableNames: 'nombre direccion estadoCivil fechaNacimiento sueldoBasico'
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa'.
+
+Empleado >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo
+    nombre := unNombre.
+    direccion := unaDireccion.
+    estadoCivil := unEstadoCivil.
+    fechaNacimiento := unaFecha.
+    sueldoBasico := unSueldo.
+
+Empleado >> edad
+    ^ Date today year - fechaNacimiento year.
+
+Empleado >> sueldoBruto
+    self subclassResponsibility.
+
+Empleado >> retenciones
+    self subclassResponsibility.
+
+Empleado >> sueldoNeto
+    ^ self sueldoBruto - self retenciones.
+
+Empleado subclass: #EmpleadoPermanente
+    instanceVariableNames: 'hijos antigüedad'
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa'.
+
+EmpleadoPermanente >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo hijos: cantidadHijos antiguedad: unaAntiguedad
+    super initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo.
+    hijos := cantidadHijos.
+    antigüedad := unaAntiguedad.
+
+EmpleadoPermanente >> sueldoBruto
+    ^ sueldoBasico + (hijos * 150) + (estadoCivil = 'Casado' ifTrue: [100] ifFalse: [0]) + (antigüedad * 50).
+
+EmpleadoPermanente >> retenciones
+    ^ (self sueldoBruto * 0.10) + (hijos * 20) + (self sueldoBruto * 0.15).
+
+Empleado subclass: #EmpleadoTemporario
+    instanceVariableNames: 'fechaFin horasExtras'
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa'.
+
+EmpleadoTemporario >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo fechaFin: unaFechaFin horasExtras: unasHorasExtras
+    super initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo.
+    fechaFin := unaFechaFin.
+    horasExtras := unasHorasExtras.
+
+EmpleadoTemporario >> sueldoBruto
+    ^ sueldoBasico + (horasExtras * 40).
+
+EmpleadoTemporario >> retenciones
+    ^ (self sueldoBruto * 0.10) + ((self edad > 50) ifTrue: [25] ifFalse: [0]) + (horasExtras * 5).
+
+Empleado subclass: #EmpleadoContratado
+    instanceVariableNames: 'numeroContrato medioPago'
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa'.
+
+EmpleadoContratado >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo numeroContrato: unNumeroContrato medioPago: unMedioPago
+    super initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo.
+    numeroContrato := unNumeroContrato.
+    medioPago := unMedioPago.
+
+EmpleadoContratado >> sueldoBruto
+    ^ sueldoBasico.
+
+EmpleadoContratado >> retenciones
+    ^ 50.
+
+
+Object subclass: #ReciboDeHaberes
+    instanceVariableNames: 'empleado fechaEmision conceptos sueldoBruto sueldoNeto'
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa'.
+
+ReciboDeHaberes >> initializeCon: unEmpleado
+    empleado := unEmpleado.
+    fechaEmision := Date today.
+    sueldoBruto := empleado sueldoBruto.
+    sueldoNeto := empleado sueldoNeto.
+    conceptos := OrderedCollection new.
+    self generarConceptos.
+
+ReciboDeHaberes >> generarConceptos
+    conceptos add: (ConceptoDeRecibo new initializeCon: 'Sueldo Bruto' monto: sueldoBruto).
+    conceptos add: (ConceptoDeRecibo new initializeCon: 'Retenciones' monto: empleado retenciones).
+
+ReciboDeHaberes >> imprimir
+    Transcript show: 'Recibo de Haberes - '; show: empleado nombre; cr.
+    Transcript show: 'Dirección: '; show: empleado direccion; cr.
+    Transcript show: 'Fecha: '; show: fechaEmision printString; cr.
+    Transcript show: 'Sueldo Bruto: $'; show: sueldoBruto printString; cr.
+    Transcript show: 'Sueldo Neto: $'; show: sueldoNeto printString; cr.
+    Transcript show: 'Conceptos:'; cr.
+    conceptos do: [:concepto | concepto imprimir].
+    Transcript show: '-------------------------'; cr.
+
+Object subclass: #ConceptoDeRecibo
+    instanceVariableNames: 'descripcion monto'
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa'.
+
+ConceptoDeRecibo >> initializeCon: unaDescripcion monto: unMonto
+    descripcion := unaDescripcion.
+    monto := unMonto.
+
+ConceptoDeRecibo >> imprimir
+    Transcript show: descripcion; show: ': $'; show: monto printString; cr.
