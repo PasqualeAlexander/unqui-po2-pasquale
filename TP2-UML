@@ -13,16 +13,16 @@ Empresa >> initializeCon: unNombre cuit: unCuit
 Empresa >> agregarEmpleado: unEmpleado
     empleados add: unEmpleado.
 
-Empresa >> totalSueldosNetos
-    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado sueldoNeto].
+Empresa >> calcularMontoTotalDeSueldosNetos
+    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado calcularSueldoNeto].
 
-Empresa >> totalSueldosBrutos
-    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado sueldoBruto].
+Empresa >> calcularMontoTotalDeSueldosBrutos
+    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado calcularSueldoBruto].
 
-Empresa >> totalRetenciones
-    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado retenciones].
+Empresa >> calcularTotalDeRetenciones
+    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado calcularRetenciones].
 
-Empresa >> liquidarSueldos
+Empresa >> realizarLiquidacionDeSueldos
     empleados do: [:empleado |
         | recibo |
         recibo := ReciboDeHaberes new initializeCon: empleado.
@@ -44,101 +44,107 @@ Empleado >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstad
     fechaNacimiento := unaFecha.
     sueldoBasico := unSueldo.
 
-Empleado >> edad
+Empleado >> calcularEdad
     ^ Date today year - fechaNacimiento year.
 
-Empleado >> sueldoBruto
+Empleado >> calcularSueldoBruto
     self subclassResponsibility.
 
-Empleado >> retenciones
+Empleado >> calcularRetenciones
     self subclassResponsibility.
 
-Empleado >> sueldoNeto
-    ^ self sueldoBruto - self retenciones.
+Empleado >> calcularSueldoNeto
+    ^ self calcularSueldoBruto - self calcularRetenciones.
 
 Empleado subclass: #EmpleadoPermanente
-    instanceVariableNames: 'hijos antiguedad'
+    instanceVariableNames: 'cantidadDeHijos antiguedad'
     classVariableNames: ''
     poolDictionaries: ''
     category: 'Empresa'.
 
-EmpleadoPermanente >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo hijos: cantidadHijos antiguedad: unaAntiguedad
+EmpleadoPermanente >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo cantidadDeHijos: cantidadHijos antiguedad: unaAntiguedad
     cantidadHijos < 0 ifTrue: [self error: 'La cantidad de hijos no puede ser negativa'].
     unaAntiguedad < 0 ifTrue: [self error: 'La antigüedad no puede ser negativa'].
     super initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo.
-    hijos := cantidadHijos.
+    cantidadDeHijos := cantidadHijos.
     antiguedad := unaAntiguedad.
 
-EmpleadoPermanente >> sueldoBruto
-    ^ sueldoBasico + (hijos * 150) + (estadoCivil = 'Casado' ifTrue: [100] ifFalse: [0]) + (antiguedad * 50).
+EmpleadoPermanente >> calcularSueldoBruto
+    ^ sueldoBasico + (cantidadDeHijos * 150) + (estadoCivil = 'Casado' ifTrue: [100] ifFalse: [0]) + (antiguedad * 50).
 
-EmpleadoPermanente >> retenciones
-    ^ (self sueldoBruto * 0.10) + (hijos * 20) + (self sueldoBruto * 0.15).
+EmpleadoPermanente >> calcularRetenciones
+    ^ (self calcularSueldoBruto * 0.10) + (cantidadDeHijos * 20) + (self calcularSueldoBruto * 0.15).
+
+EmpleadoPermanente >> calcularSalarioFamiliar
+    ^ (cantidadDeHijos * 150) + (estadoCivil = 'Casado' ifTrue: [100] ifFalse: [0]).
 
 Empleado subclass: #EmpleadoTemporario
-    instanceVariableNames: 'fechaFin horasExtras'
+    instanceVariableNames: 'fechaDeDesignacionAPlantaTemporaria cantidadDeHorasExtras'
     classVariableNames: ''
     poolDictionaries: ''
     category: 'Empresa'.
 
-EmpleadoTemporario >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo fechaFin: unaFechaFin horasExtras: unasHorasExtras
+EmpleadoTemporario >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo fechaDeDesignacionAPlantaTemporaria: unaFechaFin cantidadDeHorasExtras: unasHorasExtras
     unaFechaFin <= Date today ifTrue: [self error: 'La fecha de fin debe ser futura'].
     unasHorasExtras < 0 ifTrue: [self error: 'Las horas extras no pueden ser negativas'].
     super initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo.
-    fechaFin := unaFechaFin.
-    horasExtras := unasHorasExtras.
+    fechaDeDesignacionAPlantaTemporaria := unaFechaFin.
+    cantidadDeHorasExtras := unasHorasExtras.
 
-EmpleadoTemporario >> sueldoBruto
-    ^ sueldoBasico + (horasExtras * 40).
+EmpleadoTemporario >> calcularSueldoBruto
+    ^ sueldoBasico + (cantidadDeHorasExtras * 40).
 
-EmpleadoTemporario >> retenciones
-    ^ (self sueldoBruto * 0.10) + ((self edad > 50) ifTrue: [25] ifFalse: [0]) + (horasExtras * 5).
+EmpleadoTemporario >> calcularRetenciones
+    ^ (self calcularSueldoBruto * 0.10) + ((self calcularEdad > 50) ifTrue: [25] ifFalse: [0]) + (cantidadDeHorasExtras * 5).
 
 Empleado subclass: #EmpleadoContratado
-    instanceVariableNames: 'numeroContrato medioPago'
+    instanceVariableNames: 'numeroDeContrato medioDePago'
     classVariableNames: ''
     poolDictionaries: ''
     category: 'Empresa'.
 
-EmpleadoContratado >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo numeroContrato: unNumeroContrato medioPago: unMedioPago
+EmpleadoContratado >> initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo numeroDeContrato: unNumeroContrato medioDePago: unMedioPago
     unNumeroContrato isEmpty ifTrue: [self error: 'El número de contrato no puede estar vacío'].
     super initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo.
-    numeroContrato := unNumeroContrato.
-    medioPago := unMedioPago.
+    numeroDeContrato := unNumeroContrato.
+    medioDePago := unMedioPago.
 
-EmpleadoContratado >> sueldoBruto
+EmpleadoContratado >> calcularSueldoBruto
     ^ sueldoBasico.
 
-EmpleadoContratado >> retenciones
+EmpleadoContratado >> calcularRetenciones
     ^ 50.
 
+EmpleadoContratado >> calcularSueldoNeto
+    ^ self calcularSueldoBruto - self calcularRetenciones.
+
 Object subclass: #ReciboDeHaberes
-    instanceVariableNames: 'empleado fechaEmision conceptos sueldoBruto sueldoNeto'
+    instanceVariableNames: 'empleado fechaDeEmision listaDeConceptos sueldoBruto sueldoNeto'
     classVariableNames: ''
     poolDictionaries: ''
     category: 'Empresa'.
 
 ReciboDeHaberes >> initializeCon: unEmpleado
     empleado := unEmpleado.
-    fechaEmision := Date today.
-    sueldoBruto := empleado sueldoBruto.
-    sueldoNeto := empleado sueldoNeto.
-    conceptos := OrderedCollection new.
+    fechaDeEmision := Date today.
+    sueldoBruto := empleado calcularSueldoBruto.
+    sueldoNeto := empleado calcularSueldoNeto.
+    listaDeConceptos := OrderedCollection new.
     self generarConceptos.
 
 ReciboDeHaberes >> generarConceptos
-    conceptos add: (ConceptoDeRecibo new initializeCon: 'Sueldo Bruto' monto: sueldoBruto).
-    conceptos add: (ConceptoDeRecibo new initializeCon: 'Retenciones' monto: empleado retenciones).
+    listaDeConceptos add: (ConceptoDeRecibo new initializeCon: 'Sueldo Bruto' monto: sueldoBruto).
+    listaDeConceptos add: (ConceptoDeRecibo new initializeCon: 'Retenciones' monto: empleado calcularRetenciones).
 
 ReciboDeHaberes >> imprimir
     Transcript show: 'Recibo de Haberes - '; show: empleado nombre; cr.
     Transcript show: 'Dirección: '; show: empleado direccion; cr.
-    Transcript show: 'Fecha: '; show: fechaEmision printString; cr.
+    Transcript show: 'Fecha: '; show: fechaDeEmision printString; cr.
     Transcript show: 'Sueldo Bruto: $'; show: sueldoBruto printString; cr.
     Transcript show: 'Sueldo Neto: $'; show: sueldoNeto printString; cr.
     Transcript show: 'Conceptos:'; cr.
-    conceptos do: [:concepto | concepto imprimir].
-    Transcript show: '---------------------'; cr.
+    listaDeConceptos do: [:concepto | concepto imprimir].
+    Transcript show: '-------------------------'; cr.
 
 Object subclass: #ConceptoDeRecibo
     instanceVariableNames: 'descripcion monto'
@@ -155,7 +161,7 @@ ConceptoDeRecibo >> initializeCon: unaDescripcion monto: unMonto
 ConceptoDeRecibo >> imprimir
     Transcript show: descripcion; show: ': $'; show: monto printString; cr.
 
-"==== Tests ===="
+"==== Tests Actualizados ===="
 TestCase subclass: #EmpresaTest
     instanceVariableNames: ''
     classVariableNames: ''
@@ -173,7 +179,7 @@ EmpresaTest >> testCalcularSueldosNetos
         estadoCivil: 'Casado' 
         fechaNacimiento: (Date newDay: 15 month: 6 year: 2003) 
         sueldoBasico: 5000000 
-        hijos: 1
+        cantidadDeHijos: 1
         antiguedad: 7.
     
     empleado2 := EmpleadoTemporario new 
@@ -182,13 +188,13 @@ EmpresaTest >> testCalcularSueldosNetos
         estadoCivil: 'Casado' 
         fechaNacimiento: (Date newDay: 25 month: 2 year: 2002) 
         sueldoBasico: 900000 
-        fechaFin: (Date today addDays: 45) 
-        horasExtras: 8.
+        fechaDeDesignacionAPlantaTemporaria: (Date today addDays: 45) 
+        cantidadDeHorasExtras: 8.
     
     empresa agregarEmpleado: empleado1.
     empresa agregarEmpleado: empleado2.
     
-    self assert: empresa totalSueldosNetos > 0.
+    self assert: empresa calcularMontoTotalDeSueldosNetos > 0.
 
 EmpresaTest >> testLiquidacionSueldos
     | empresa |
@@ -199,9 +205,9 @@ EmpresaTest >> testLiquidacionSueldos
         estadoCivil: 'Soltero'
         fechaNacimiento: (Date newDay: 1 month: 1 year: 2000)
         sueldoBasico: 1000
-        numeroContrato: '789'
-        medioPago: 'Transferencia').
-    empresa liquidarSueldos.
+        numeroDeContrato: '789'
+        medioDePago: 'Transferencia').
+    empresa realizarLiquidacionDeSueldos.
 
 EmpresaTest >> testCalcularSueldosNetosConContratado
     | empresa empleado1 empleado2 empleado3 |
@@ -213,7 +219,7 @@ EmpresaTest >> testCalcularSueldosNetosConContratado
         estadoCivil: 'Casado' 
         fechaNacimiento: (Date newDay: 15 month: 6 year: 2003) 
         sueldoBasico: 5000000 
-        hijos: 1
+        cantidadDeHijos: 1
         antiguedad: 7.
     
     empleado2 := EmpleadoTemporario new 
@@ -222,8 +228,8 @@ EmpresaTest >> testCalcularSueldosNetosConContratado
         estadoCivil: 'Casado' 
         fechaNacimiento: (Date newDay: 25 month: 2 year: 2002) 
         sueldoBasico: 900000 
-        fechaFin: (Date today addDays: 45) 
-        horasExtras: 8.
+        fechaDeDesignacionAPlantaTemporaria: (Date today addDays: 45) 
+        cantidadDeHorasExtras: 8.
     
     empleado3 := EmpleadoContratado new 
         initializeCon: 'Nicolas' 
@@ -231,11 +237,11 @@ EmpresaTest >> testCalcularSueldosNetosConContratado
         estadoCivil: 'Casado' 
         fechaNacimiento: (Date newDay: 9 month: 9 year: 2001) 
         sueldoBasico: 600000 
-        numeroContrato: '1234321' 
-        medioPago: 'Transferencia'.
+        numeroDeContrato: '1234321' 
+        medioDePago: 'Transferencia'.
     
     empresa agregarEmpleado: empleado1.
     empresa agregarEmpleado: empleado2.
     empresa agregarEmpleado: empleado3.
     
-    self assert: empresa totalSueldosNetos = (empleado1 sueldoNeto + empleado2 sueldoNeto + empleado3 sueldoNeto).
+    self assert: empresa calcularMontoTotalDeSueldosNetos = (empleado1 calcularSueldoNeto + empleado2 calcularSueldoNeto + empleado3 calcularSueldoNeto).
