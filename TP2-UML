@@ -14,13 +14,13 @@ Empresa >> agregarEmpleado: unEmpleado
     empleados add: unEmpleado.
 
 Empresa >> totalSueldosNetos
-    ^ empleados sum: [:empleado | empleado sueldoNeto].
+    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado sueldoNeto].
 
 Empresa >> totalSueldosBrutos
-    ^ empleados sum: [:empleado | empleado sueldoBruto].
+    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado sueldoBruto].
 
 Empresa >> totalRetenciones
-    ^ empleados sum: [:empleado | empleado retenciones].
+    ^ empleados inject: 0 into: [:sum :empleado | sum + empleado retenciones].
 
 Empresa >> liquidarSueldos
     empleados do: [:empleado |
@@ -57,7 +57,7 @@ Empleado >> sueldoNeto
     ^ self sueldoBruto - self retenciones.
 
 Empleado subclass: #EmpleadoPermanente
-    instanceVariableNames: 'hijos antigüedad'
+    instanceVariableNames: 'hijos antiguedad'
     classVariableNames: ''
     poolDictionaries: ''
     category: 'Empresa'.
@@ -67,10 +67,10 @@ EmpleadoPermanente >> initializeCon: unNombre direccion: unaDireccion estadoCivi
     unaAntiguedad < 0 ifTrue: [self error: 'La antigüedad no puede ser negativa'].
     super initializeCon: unNombre direccion: unaDireccion estadoCivil: unEstadoCivil fechaNacimiento: unaFecha sueldoBasico: unSueldo.
     hijos := cantidadHijos.
-    antigüedad := unaAntiguedad.
+    antiguedad := unaAntiguedad.
 
 EmpleadoPermanente >> sueldoBruto
-    ^ sueldoBasico + (hijos * 150) + (estadoCivil = 'Casado' ifTrue: [100] ifFalse: [0]) + (antigüedad * 50).
+    ^ sueldoBasico + (hijos * 150) + (estadoCivil = 'Casado' ifTrue: [100] ifFalse: [0]) + (antiguedad * 50).
 
 EmpleadoPermanente >> retenciones
     ^ (self sueldoBruto * 0.10) + (hijos * 20) + (self sueldoBruto * 0.15).
@@ -112,7 +112,6 @@ EmpleadoContratado >> sueldoBruto
 EmpleadoContratado >> retenciones
     ^ 50.
 
-
 Object subclass: #ReciboDeHaberes
     instanceVariableNames: 'empleado fechaEmision conceptos sueldoBruto sueldoNeto'
     classVariableNames: ''
@@ -139,7 +138,7 @@ ReciboDeHaberes >> imprimir
     Transcript show: 'Sueldo Neto: $'; show: sueldoNeto printString; cr.
     Transcript show: 'Conceptos:'; cr.
     conceptos do: [:concepto | concepto imprimir].
-    Transcript show: '-------------------------'; cr.
+    Transcript show: '---------------------'; cr.
 
 Object subclass: #ConceptoDeRecibo
     instanceVariableNames: 'descripcion monto'
@@ -156,12 +155,18 @@ ConceptoDeRecibo >> initializeCon: unaDescripcion monto: unMonto
 ConceptoDeRecibo >> imprimir
     Transcript show: descripcion; show: ': $'; show: monto printString; cr.
 
-"1)C) Dos scripts de codigo donde muestro primero el cálculo del total de sueldos neto y luego la liquidación de sueldo:
-test010_calcularSueldosNetosConEmpleadoContratado
+"==== Tests ===="
+TestCase subclass: #EmpresaTest
+    instanceVariableNames: ''
+    classVariableNames: ''
+    poolDictionaries: ''
+    category: 'Empresa-Tests'.
+
+EmpresaTest >> testCalcularSueldosNetos
     | empresa empleado1 empleado2 |
-
+    
     empresa := Empresa new initializeCon: 'Alex INC' cuit: '23-2347758-9'.
-
+    
     empleado1 := EmpleadoPermanente new 
         initializeCon: 'Alejo' 
         direccion: 'Av de la plata 3453' 
@@ -170,7 +175,7 @@ test010_calcularSueldosNetosConEmpleadoContratado
         sueldoBasico: 5000000 
         hijos: 1
         antiguedad: 7.
-
+    
     empleado2 := EmpleadoTemporario new 
         initializeCon: 'Franco' 
         direccion: 'Condarco 3451' 
@@ -179,25 +184,28 @@ test010_calcularSueldosNetosConEmpleadoContratado
         sueldoBasico: 900000 
         fechaFin: (Date today addDays: 45) 
         horasExtras: 8.
-
+    
     empresa agregarEmpleado: empleado1.
     empresa agregarEmpleado: empleado2.
-    Transcript show: 'Total sueldos netos: $', empresa totalSueldosNetos printString; cr.
+    
+    self assert: empresa totalSueldosNetos > 0.
 
-"Script 2: Liquidación de sueldos"
+EmpresaTest >> testLiquidacionSueldos
+    | empresa |
+    empresa := Empresa new initializeCon: 'Test' cuit: '11-11111111-1'.
+    empresa agregarEmpleado: (EmpleadoContratado new
+        initializeCon: 'Test'
+        direccion: 'Test'
+        estadoCivil: 'Soltero'
+        fechaNacimiento: (Date newDay: 1 month: 1 year: 2000)
+        sueldoBasico: 1000
+        numeroContrato: '789'
+        medioPago: 'Transferencia').
     empresa liquidarSueldos.
-"
 
-"2)C) No, porque la empresa trata a todos los empleados de manera homogénea a través de la clase abstracta Empleado. 
-El polimorfismo ayuda en que se pueda agregar a EmpleadoContratado sin cambios en Empresa, ya que hereda los mensajes de la clase padre, si bien 
-se modifica el UML, la clase Empleado en sí no se modifica."
-
-"2)D) Scripts de codigo agregando a un EmpleadoContratado:
-"Script 1: Cálculo de total de sueldos netos con empleado contratado incluido"
-
-test013_calcularSueldosNetosConEmpleadoContratado
+EmpresaTest >> testCalcularSueldosNetosConContratado
     | empresa empleado1 empleado2 empleado3 |
-
+    
     empresa := Empresa new initializeCon: 'Alex INC' cuit: '23-2347758-9'.
     empleado1 := EmpleadoPermanente new 
         initializeCon: 'Alejo' 
@@ -207,7 +215,7 @@ test013_calcularSueldosNetosConEmpleadoContratado
         sueldoBasico: 5000000 
         hijos: 1
         antiguedad: 7.
-
+    
     empleado2 := EmpleadoTemporario new 
         initializeCon: 'Franco' 
         direccion: 'Condarco 3451' 
@@ -216,7 +224,7 @@ test013_calcularSueldosNetosConEmpleadoContratado
         sueldoBasico: 900000 
         fechaFin: (Date today addDays: 45) 
         horasExtras: 8.
-
+    
     empleado3 := EmpleadoContratado new 
         initializeCon: 'Nicolas' 
         direccion: 'Saenz peña 473' 
@@ -225,12 +233,9 @@ test013_calcularSueldosNetosConEmpleadoContratado
         sueldoBasico: 600000 
         numeroContrato: '1234321' 
         medioPago: 'Transferencia'.
-
+    
     empresa agregarEmpleado: empleado1.
     empresa agregarEmpleado: empleado2.
     empresa agregarEmpleado: empleado3.
-    Transcript show: 'Total sueldos netos: $', empresa totalSueldosNetos printString; cr.
-
-"Script 2: Liquidación de sueldos (incluye EmpleadoContratado)"
-    empresa liquidarSueldos.
-"
+    
+    self assert: empresa totalSueldosNetos = (empleado1 sueldoNeto + empleado2 sueldoNeto + empleado3 sueldoNeto).
