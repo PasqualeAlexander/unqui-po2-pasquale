@@ -148,11 +148,80 @@ ConceptoDeRecibo >> imprimir
     Transcript show: descripcion; show: ': $'; show: monto printString; cr.
 
 "1)C) Dos scripts de codigo donde muestro primero el cálculo del total de sueldos neto y luego la liquidación de sueldo:
+test010_calcularSueldosNetosConEmpleadoContratado
+| empresa empleado1 empleado2 |
 
+empresa := Empresa new initializeCon: 'Alex INC' cuit: '23-2347758-9'.
+
+empleado1 := EmpleadoPermanente new 
+    initializeCon: 'Alejo' 
+    direccion: 'Av de la plata 3453' 
+    estadoCivil: 'Casado' 
+    fechaNacimiento: (Date newDay: 15 month: 6 year: 2003) 
+    sueldoBasico: 5000000 
+    hijos: 1
+    antiguedad: 7.
+
+empleado2 := EmpleadoTemporario new 
+    initializeCon: 'Franco' 
+    direccion: 'Condarco 3451' 
+    estadoCivil: 'Casado' 
+    fechaNacimiento: (Date newDay: 25 month: 2 year: 2002) 
+    sueldoBasico: 900000 
+    fechaFin: (Date today addDays: 45) 
+    horasExtras: 8.
+
+empresa agregarEmpleado: empleado1.
+empresa agregarEmpleado: empleado2.
+Transcript show: 'Total sueldos netos: $', empresa totalSueldosNetos printString; cr.
+
+"Script 2: Liquidación de sueldos"
+empresa liquidarSueldos.
 "
 
-"2)C) Si, se mofifica ya que hay que agregar una clase nueva, la cual es subclase de Empleado, llamada "EmpleadoContratado"."
+"2)C) No, porque la empresa trata a todos los empleados de manera homogénea a través de la clase abstracta Empleado. 
+El polimorfismo ayuda en que se pueda agregar a EmpleadoContratado sin cambios en Empresa, ya que hereda los mensajes de la clase padre, si bien 
+se modifica el UML, la clase Empleado en sí no se modifica."
 
 "2)D) Scripts de codigo agregando a un EmpleadoContratado:
+"Script 1: Cálculo de total de sueldos netos con empleado contratado incluido"
 
+test010_calcularSueldosNetosConEmpleadoContratado
+| empresa empleado1 empleado2 empleado3 |
+
+empresa := Empresa new initializeCon: 'Alex INC' cuit: '23-2347758-9'.
+empleado1 := EmpleadoPermanente new 
+    initializeCon: 'Alejo' 
+    direccion: 'Av de la plata 3453' 
+    estadoCivil: 'Casado' 
+    fechaNacimiento: (Date newDay: 15 month: 6 year: 2003) 
+    sueldoBasico: 5000000 
+    hijos: 1
+    antiguedad: 7.
+
+empleado2 := EmpleadoTemporario new 
+    initializeCon: 'Franco' 
+    direccion: 'Condarco 3451' 
+    estadoCivil: 'Casado' 
+    fechaNacimiento: (Date newDay: 25 month: 2 year: 2002) 
+    sueldoBasico: 900000 
+    fechaFin: (Date today addDays: 45) 
+    horasExtras: 8.
+
+empleado3 := EmpleadoContratado new 
+    initializeCon: 'Nicolas' 
+    direccion: 'Saenz peña 473' 
+    estadoCivil: 'Casado' 
+    fechaNacimiento: (Date newDay: 9 month: 9 year: 2001) 
+    sueldoBasico: 600000 
+    numeroContrato: '1234321' 
+    medioPago: 'Transferencia'.
+
+empresa agregarEmpleado: empleado1.
+empresa agregarEmpleado: empleado2.
+empresa agregarEmpleado: empleado3.
+Transcript show: 'Total sueldos netos: $', empresa totalSueldosNetos printString; cr.
+
+"Script 2: Liquidación de sueldos (incluye EmpleadoContratado)"
+empresa liquidarSueldos.
 "
