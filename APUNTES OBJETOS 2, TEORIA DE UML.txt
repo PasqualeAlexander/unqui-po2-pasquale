@@ -1,0 +1,64 @@
+                                                      APUNTES OBJETOS 2, TEORIA DE UML "ELEMENTOS BASICOS" CLASE GRABADA.
+
+Lenguaje para diseñar: UML
+Lenguaje para programar: Java
+
+UML es un lenguaje grafico que permite definir diseños de software, particularmente orientado a objetos.
+Vamos  a utilizar UML para hacer diagramas de clases.
+
+Diseñar con diagrama de clases
+   - Relaciones entre clases en el sistema
+   - Subclasificación
+   - Definición de las interfaces de las clases ( Métodos, parámetros, etc.)
+   - Colaboraciones
+   - Dependencias
+
+Diagrama de secuencia (lo veremos mas adelante)
+   - Interacción entre instancias
+   - Envío de mensajes
+   - Respuestas en los mensajes
+
+Diagrama de clases:
+   - Es privado
+   + Es publico
+   La letra itálica o cursiva se utiliza para decir que ese método u operación es abstracto.
+   El subrayado se utiliza para los métodos que son solo de la clase (Por ejemplo un new).
+   La flecha con curva indica relación (con la punta pintada), y va escrito ahí como nombre de rol el propósito de lo que tiene q hacer la clase con la que se relaciona,
+      por ejemplo Bomba ---- timer ---> Reloj
+
+EJEMPLO DE DEFINICIÓN DE UNA CLASE EN UML:
+
+   Nombre de la clase          Empleado
+
+   Atributos                   - nombre: String
+                               - apellido: String
+
+   Operaciones                 + getNombre(): String
+                               + new(String, String):void
+                               + setNombre(String)
+
+
+SINTAXIS UML:
+
+Los nombres de las clases comienzan en mayúscula.
+No puede haber dos clases con el mismo nombre.
+
+Atributos: Representan a las variables de instancia que no son relaciones con otras clases.
+Herencia: La flecha apunta de la subclase a la Superclase se utiliza una flecha continua con la punta de la flecha sin rellenar.
+
+Relaciones entre clases:
+
+    - Indica el rol en la relación (Por ejemplo: emisor)
+    - Tienen orden y emisor ().
+    - Tienen cardinalidad (Por ejemplo *,1).
+    - Tienen navegabilidad (dirección de la flecha)
+
+OTROS APUNTES:
+    - El new en orden es un metodo que sirve como constructor.
+    - Emisor siempre es un colaborador interno de orden.
+    - Orden no es navegable desde de emisor pero si viceversa.
+    - Los metodos abstractos no tienen comportamientos, sikrven para definir los protocolos basicos que tiene una jerarquia.
+    - Subclass responasibility de objetos 1 es, por ejemplo, la dorma de definir una clase abstracta.
+
+
+
