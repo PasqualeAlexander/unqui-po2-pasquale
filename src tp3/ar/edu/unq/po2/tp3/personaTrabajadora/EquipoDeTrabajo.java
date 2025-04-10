@@ -15,6 +15,10 @@ public class EquipoDeTrabajo {
         return nombreDelEquipo;
     }
     
+    public ArrayList<PersonaTrabajadora> getIntegrantes(){
+    	return integrantes;
+    }
+    
     public void agregarIntegrante(PersonaTrabajadora persona) {
         integrantes.add(persona);
     }
