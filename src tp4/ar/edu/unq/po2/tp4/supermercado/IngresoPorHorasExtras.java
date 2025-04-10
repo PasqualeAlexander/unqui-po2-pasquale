@@ -1,19 +1,23 @@
 package ar.edu.unq.po2.tp4.supermercado;
 
 public class IngresoPorHorasExtras extends Ingreso {
-	int cantidadDeHorasExtrasRealizadas;
-	
-	public IngresoPorHorasExtras(String mesDePercepcion, String concepto, double montoPercibido) {
-		super(mesDePercepcion, concepto, montoPercibido);
+    private int cantidadHoras;
+
+    public IngresoPorHorasExtras(String mes, String concepto, double monto, int cantidadHoras) {
+        super(mes, concepto, monto);
+        this.cantidadHoras = cantidadHoras;
+    }
+    
+    public int getCantidadHoras() {
+		return cantidadHoras;
 	}
 
-	public int getCantidadDeHorasExtrasRealizadas() {
-		return cantidadDeHorasExtrasRealizadas;
+	public void setCantidadHoras(int cantidadHoras) {
+		this.cantidadHoras = cantidadHoras;
 	}
 
-	public void setCantidadDeHorasExtrasRealizadas(int cantidadDeHorasExtrasRealizadas) {
-		this.cantidadDeHorasExtrasRealizadas = cantidadDeHorasExtrasRealizadas;
-	}
-	
-	
+	@Override
+    public double getMontoImponible() {
+        return 0;
+    }
 }

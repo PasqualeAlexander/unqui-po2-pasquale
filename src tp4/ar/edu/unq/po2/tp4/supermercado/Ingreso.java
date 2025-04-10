@@ -31,6 +31,10 @@ public class Ingreso {
 		return montoImponible;
 	}
 
+	public double getMontoImponible() {
+		return montoImponible;
+	}
+	
 	public void setMontoPercibido(double montoImponible) {
 		this.montoImponible = montoImponible;
 	}
