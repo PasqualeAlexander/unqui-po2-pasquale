@@ -3,9 +3,9 @@ package ar.edu.unq.po2.tp4.supermercado;
 import java.util.ArrayList;
 
 public class Supermercado {
-	String nombre;
-	String direccion;
-	ArrayList<Producto> productos;
+	private String nombre;
+	private  String direccion;
+	private  ArrayList<Producto> productos;
 
 	public Supermercado(String nombre, String direccion) {
 		this.nombre = nombre;

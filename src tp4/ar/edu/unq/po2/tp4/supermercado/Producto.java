@@ -1,9 +1,9 @@
 package ar.edu.unq.po2.tp4.supermercado;
 
 public class Producto {
-	String nombre;
-	double precio;
-	boolean esPrecioCuidado;
+	protected String nombre;
+	protected double precio;
+	protected boolean esPrecioCuidado;
 	
 	public Producto(String nombre, double precio, boolean esPrecioCuidado) {
 		this.nombre = nombre;

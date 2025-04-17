@@ -1,9 +1,9 @@
 package ar.edu.unq.po2.tp4.supermercado;
 
 public class Ingreso {
-	String mesDePercepcion;
-	String concepto;
-	double montoImponible;
+	private String mesDePercepcion;
+	private String concepto;
+	private double montoImponible;
 
 	public Ingreso(String mesDePercepcion, String concepto, double montoImponible) {
 		this.mesDePercepcion = mesDePercepcion;
