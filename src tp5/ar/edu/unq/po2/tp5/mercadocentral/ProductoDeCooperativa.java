@@ -13,10 +13,6 @@ public class ProductoDeCooperativa extends Producto {
 	
 	@Override
 	public double getPrecio() {
-		return super.getPrecio() * porcentajeDeDescuentoPorIVA();
-	}
-
-	public void setPrecio(double precio) {
-		this.precio = precio;
+		return super.getPrecio() - (super.getPrecio() * porcentajeDeDescuentoPorIVA());
 	}
 }

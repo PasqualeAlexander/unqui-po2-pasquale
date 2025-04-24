@@ -3,7 +3,7 @@ package ar.edu.unq.po2.tp5.mercadocentral;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Caja {
+public class Caja implements Agencia {
 	private List<Producto> productosRegistrados;
 	private double montoTotalAPagar;
 
@@ -34,12 +34,18 @@ public class Caja {
         }
 		this.productosRegistrados.add(producto);
 		this.montoTotalAPagar += producto.getPrecio();
-		producto.decrementarStock(); // Porque se estaria llevando una unidad
+		producto.decrementarStock(); 
 	}
 
 	public void registrarPoductos(List<Producto> productos) {
 		for (Producto producto : productos) {
 			registrarUnProducto(producto);
 		}
+	}
+
+	@Override
+	public void registrarPago(Factura factura) {
+		double total = factura.getCosto();
+        System.out.println("Pago realizado en caja de monto: $" + total);
 	}
 }

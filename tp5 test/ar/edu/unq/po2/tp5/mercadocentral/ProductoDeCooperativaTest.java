@@ -1,14 +1,25 @@
 package ar.edu.unq.po2.tp5.mercadocentral;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ProductoDeCooperativaTest {
+public class ProductoDeCooperativaTest {
+	ProductoDeCooperativa producto;
 
-	@Test
-	void test() {
-		fail("Not yet implemented");
+	@BeforeEach
+	void setUp() {
+		producto = new ProductoDeCooperativa(200.0, 3);
 	}
 
+	@Test
+	void testEsProductoDeCooperativaDevuelveTrue() {
+		assertTrue(producto.getEsProductoDeCooperativa());
+	}
+
+	@Test
+	void testPrecioConDescuentoEs90PorcientoMenor() {
+		assertEquals(180.0, producto.getPrecio());
+	}
 }
+
