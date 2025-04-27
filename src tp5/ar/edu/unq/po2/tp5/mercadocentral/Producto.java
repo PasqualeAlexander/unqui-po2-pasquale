@@ -3,18 +3,28 @@ package ar.edu.unq.po2.tp5.mercadocentral;
 public class Producto {
 	protected double precio;
 	protected int stock;
+	protected String nombre;
 	protected boolean esProductoDeCooperativa;
 
-	public Producto(double precio, int unStock) {
+	public Producto(double precio, int unStock, String nombre) {
 		this.precio = precio;
 		this.stock = unStock;
 		this.esProductoDeCooperativa = false;
+		this.nombre = nombre;
 	}
 
 	public boolean getEsProductoDeCooperativa() {
 		return this.esProductoDeCooperativa;
 	}
 
+	public String getNombre() {
+		return this.nombre;
+	}
+	
+	public void setNombre(String unNombre) {
+		this.nombre = unNombre;
+	}
+	
 	public double getPrecio() {
 		return this.precio;
 	}

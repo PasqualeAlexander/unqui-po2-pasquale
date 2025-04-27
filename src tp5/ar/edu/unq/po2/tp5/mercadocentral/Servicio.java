@@ -4,8 +4,8 @@ public class Servicio extends Factura {
 	double costoPorUnidadConsumida;
 	double cantidadDeUnidadesConsumidasEnElPeriodoFacturado;
 
-	public Servicio(String idServicio , double nuevoCostoPorUnidadConsumida, double nuevoCostoPorCantidadDeUnidadesConsumidasEnElPeriodoFacturado) {
-		super(idServicio);
+	public Servicio(String idServicio , double nuevoCostoPorUnidadConsumida, double nuevoCostoPorCantidadDeUnidadesConsumidasEnElPeriodoFacturado, Agencia agenciaALaQuePértenece) {
+		super(idServicio, agenciaALaQuePértenece);
 		this.costoPorUnidadConsumida = nuevoCostoPorUnidadConsumida;
 		this.cantidadDeUnidadesConsumidasEnElPeriodoFacturado = nuevoCostoPorCantidadDeUnidadesConsumidasEnElPeriodoFacturado;
 	}

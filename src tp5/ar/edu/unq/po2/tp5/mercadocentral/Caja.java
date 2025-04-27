@@ -3,7 +3,7 @@ package ar.edu.unq.po2.tp5.mercadocentral;
 import java.util.List;
 import java.util.ArrayList;
 
-public class Caja implements Agencia {
+public class Caja implements AgenciaInterfaz {
 	private List<Producto> productosRegistrados;
 	private double montoTotalAPagar;
 
@@ -43,9 +43,12 @@ public class Caja implements Agencia {
 		}
 	}
 
+	public void enviarPagoDeFacturaALaAgencia(Factura factura) {
+		factura.agenciaALaQuePértenece.facturasPagas.add(factura);
+	}
+	
 	@Override
 	public void registrarPago(Factura factura) {
-		double total = factura.getCosto();
-        System.out.println("Pago realizado en caja de monto: $" + total);
+		enviarPagoDeFacturaALaAgencia(factura);
 	}
 }

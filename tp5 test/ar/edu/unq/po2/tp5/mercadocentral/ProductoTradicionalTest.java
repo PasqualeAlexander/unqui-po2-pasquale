@@ -4,12 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ProductoTest {
-	Producto producto;
+public class ProductoTradicionalTest {
+	ProductoTradicional producto;
 
 	@BeforeEach
 	void setUp() {
-		producto = new Producto(100.0, 5, "Arroz");
+		producto = new ProductoTradicional(100.0, 5, "Arroz");
 	}
 
 	@Test
@@ -41,4 +41,3 @@ public class ProductoTest {
 		assertFalse(producto.getEsProductoDeCooperativa());
 	}
 }
-

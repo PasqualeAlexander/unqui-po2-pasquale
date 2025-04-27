@@ -2,8 +2,8 @@ package ar.edu.unq.po2.tp5.mercadocentral;
 
 public class ProductoDeCooperativa extends Producto {
 
-	public ProductoDeCooperativa(double precio, int unStock) {
-		super (precio, unStock);
+	public ProductoDeCooperativa(double precio, int unStock, String nombre) {
+		super (precio, unStock, nombre);
 		this.esProductoDeCooperativa = true;
 	}
 

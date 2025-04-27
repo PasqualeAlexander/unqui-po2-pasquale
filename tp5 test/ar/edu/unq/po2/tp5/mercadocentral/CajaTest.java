@@ -15,8 +15,8 @@ public class CajaTest {
 	@BeforeEach
 	void setUp() {
 		cajaRegistradora = new Caja();
-		producto = new Producto(150.0, 2);
-		productoCoop = new ProductoDeCooperativa(100.0, 3);
+		producto = new ProductoTradicional(150.0, 2, "Leche");
+		productoCoop = new ProductoDeCooperativa(100.0, 3, "Arroz");
 	}
 
 	@Test

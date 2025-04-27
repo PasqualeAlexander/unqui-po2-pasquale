@@ -9,7 +9,7 @@ public class ProductoDeCooperativaTest {
 
 	@BeforeEach
 	void setUp() {
-		producto = new ProductoDeCooperativa(200.0, 3);
+		producto = new ProductoDeCooperativa(200.0, 3, "Arroz");
 	}
 
 	@Test
