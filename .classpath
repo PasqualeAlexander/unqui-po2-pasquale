@@ -5,6 +5,9 @@
 	<classpathentry kind="src" path="src tp4"/>
 	<classpathentry kind="src" path="tp4 test"/>
 	<classpathentry kind="src" path="tp5 test"/>
+	<classpathentry kind="src" path="tp6 test"/>
+	<classpathentry kind="src" path="src tp state"/>
+	<classpathentry kind="src" path="tp state test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
 		<attributes>
 			<attribute name="module" value="true"/>
@@ -12,5 +15,6 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="src" path="src tp5"/>
+	<classpathentry kind="src" path="src tp6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
